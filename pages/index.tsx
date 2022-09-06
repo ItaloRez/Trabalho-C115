@@ -15,20 +15,28 @@ const Home: NextPage = () => {
     { text: 'Bom dia! 😁', from: 'them' },
     { text: 'Insira a mátricula do aluno desejado', from: 'them' },
   ]);
+
   const [input, setInput] = useState('');
+
+  //State para armazenar em qual posição a conversa está
   const [posicao, setPosicao] = useState(0);
 
   const [alunoEscolhido, setAlunoEscolhido] = useState<Aluno | undefined>();
   const [materia, setMateria] = useState<Disciplina | undefined>();
 
+  //Função que será chamada ao clicar no botão de enviar mensagem
   const enviarMsg = () => {
     let lista: Message[] = [];
+
+    //Adiciona a mensagem enviada na lista vinda de você
     lista.push({ text: input, from: 'me' });
 
+    //Ao digitar sair, seta para uma posição não existente nas condições
     if (input == 'sair') {
       setPosicao(4);
     }
 
+    //Ao digitar voltar, volta ao começo
     if (input == 'voltar') {
       setPosicao(0);
       lista.push({
@@ -37,10 +45,12 @@ const Home: NextPage = () => {
       });
     }
 
+    //Na posição 0, faz a busca do aluno pelo seu id, em uma lista de alunos
     if (posicao == 0 && input != 'sair') {
       let aluno = alunos.filter(
         (aluno) => aluno.matricula == parseInt(input)
       )[0];
+      //Armazena o aluno em um state para ser usado na posição 1
       setAlunoEscolhido(aluno);
       if (aluno) {
         lista.push({
@@ -60,10 +70,12 @@ const Home: NextPage = () => {
       }
     }
 
+    //Na posição 1, busca a matéria pelo seu código do aluno guardado anteriormente
     if (posicao == 1 && input != 'sair') {
       let materia = alunoEscolhido?.disciplinas.filter(
         (materia) => materia.id == parseInt(input)
       )[0];
+      //Armazena a matéria escolhida para ser utilizada na posição 2
       setMateria(materia);
       if (materia) {
         lista.push({
@@ -83,6 +95,7 @@ const Home: NextPage = () => {
       }
     }
 
+    //Na posição 2, busca a prova pelo seu código da matéria guardada anteriormente
     if (posicao == 2 && input != 'sair') {
       let prova = materia?.provas.filter(
         (prova) => prova.id == parseInt(input)
@@ -105,6 +118,7 @@ const Home: NextPage = () => {
       }
     }
 
+    //Verifica se o usuário deseja executar novamente ou sair do sistema
     if (posicao == 3 && input != 'sair') {
       if (input == 's') {
         lista.push({
@@ -121,6 +135,7 @@ const Home: NextPage = () => {
       }
     }
 
+    //Se digitado limpar, apaga a lista e seta uma posição que não entra nas condicionais
     if (input == 'limpar') {
       setMsgList([{ text: 'limpar', from: 'me' }]);
       setPosicao(4);
